@@ -6,4 +6,4 @@ spring:
     active: default
   cloud:
     config:
-      uri: http://localhost:8888 
+      uri: ${CLOUD_CONFIG_URI} 
