@@ -8,6 +8,3 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: ${EUREKA_URL}/eureka
-      
-      
-    
