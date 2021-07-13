@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,16 +35,20 @@ public class TransactionRepositoryTest {
 	@Test
 	public void mustReturnTransactionCreated() {
 		
-		Cashier cashier = cashierRepository.findById(3)
-				.orElseThrow(() -> fail("Cashier 3 not found") );
+		Optional<Cashier> optCashier = cashierRepository.findById(3);
+		assertTrue(optCashier.isPresent());
+		
+		Cashier cashier = optCashier.get();
 		
 		Transaction transaction = createTransaction(99.98, Status.FINISHED, Action.DEPOSIT);
 		transaction.setCashier(cashier);
 
 		Long idCreated = em.persist(transaction).getId();
 		
-		Transaction transactionCreated = transactionRepository.findById(idCreated)
-				.orElseThrow(() -> fail("Transaction not persisted") );
+		Optional<Transaction> optTransaction = transactionRepository.findById(idCreated);
+		assertTrue(optTransaction.isPresent());
+		
+		Transaction transactionCreated = optTransaction.get();
 
 		assertNotNull(transactionCreated);
 		assertNotNull(transactionCreated.getCreatedDate());
@@ -59,8 +62,9 @@ public class TransactionRepositoryTest {
 		
 		em.persistAndFlush(transactionCreated);
 
-		Transaction transactionUpdate = transactionRepository.findById(idCreated)
-				.orElseThrow(() -> fail("Transaction not persisted") );
+		Optional<Transaction> optTransactionUpdate = transactionRepository.findById(idCreated);
+		assertTrue(optTransactionUpdate.isPresent());
+		Transaction transactionUpdate = optTransactionUpdate.get();
 
 		assertNotNull(transactionUpdate.getUpdatedDate());
 
@@ -68,9 +72,11 @@ public class TransactionRepositoryTest {
 
 	@Test
 	public void mustReturnOneTransaction() {
+
+		Optional<Cashier> optCashier = cashierRepository.findById(2);
+		assertTrue(optCashier.isPresent());
 		
-		Cashier cashier = cashierRepository.findById(2)
-				.orElseThrow(() -> fail("Cashier 2 not found") );
+		Cashier cashier = optCashier.get();
 
 		List<Transaction> transactions = transactionRepository.findByCashier(cashier);
 		
