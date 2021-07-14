@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -18,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 
 import com.cashhouse.cashier.config.validation.CustomRestValidationHandler;
@@ -71,8 +76,51 @@ class CashierControllerTest extends SampleRequest {
 	/**
 	 * methods findAll
 	 */
-	
-	void whenFindAll_thenReturnListObjects() throws Exception { }
+
+	@Test
+	void whenFindAll_thenReturnNoContent() throws Exception {
+
+		Page<Cashier> page = new PageImpl<>(Collections.emptyList());
+
+		when(cashierService.findAll(any())).thenReturn(page);
+
+		get("/cashiers").andExpect(status().isNoContent());
+
+	}
+
+	@Test
+	void whenFindAll_thenReturnListObjectsStatusOk() throws Exception {
+
+		Cashier energy = createCashier(3l, "Energy", new BigDecimal("12.45"), new BigDecimal("3.11"));
+
+		Page<Cashier> page = new PageImpl<>(Arrays.asList(energy));
+
+		when(cashierService.findAll(any())).thenReturn(page);
+
+		// @formatter:off
+		get("/cashiers")
+	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	        .andExpect(status().isOk());
+        // @formatter:on
+
+	}
+
+	@Test
+	void whenFindAll_thenReturnListObjectsStatusPartialContent() throws Exception {
+
+		Cashier energy = createCashier(3l, "Energy", new BigDecimal("12.45"), new BigDecimal("3.11"));
+		
+		Page<Cashier> page = new PageImpl<>(Arrays.asList(energy), PageRequest.of(1, 8), 20);
+
+		when(cashierService.findAll(any())).thenReturn(page);
+
+		// @formatter:off		
+		get("/cashiers?size=2")
+	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	        .andExpect(status().isPartialContent());
+        // @formatter:on
+
+	}
 	
 	/**
 	 * methods create
@@ -102,7 +150,6 @@ class CashierControllerTest extends SampleRequest {
 			.andExpect(jsonPath("$.name", is("Post Test Cashier")))
 			.andExpect(jsonPath("$.started", is(11.23)))
 			.andExpect(jsonPath("$.balance", is(11.23)));
-
         // @formatter:on
 		
 	}
@@ -125,7 +172,6 @@ class CashierControllerTest extends SampleRequest {
 			.andExpect(jsonPath("$.name", is("Post Test Cashier")))
 			.andExpect(jsonPath("$.started", is(11.23)))
 			.andExpect(jsonPath("$.balance", is(123.23)));
-
         // @formatter:on
 		
 	}
@@ -160,7 +206,6 @@ class CashierControllerTest extends SampleRequest {
 			.andExpect(jsonPath("$.name", is("UPDATE Test Cashier")))
 			.andExpect(jsonPath("$.started", is(11.23)))
 			.andExpect(jsonPath("$.balance", is(123.23)));
-
         // @formatter:on
 		
 	}
@@ -201,7 +246,6 @@ class CashierControllerTest extends SampleRequest {
 			.andExpect(jsonPath("$.name", is("UPDATE PARTIAL Test Cashier")))
 			.andExpect(jsonPath("$.started", is(97.01)))
 			.andExpect(jsonPath("$.balance", is(1.55)));
-
         // @formatter:on
 		
 	}
@@ -224,7 +268,7 @@ class CashierControllerTest extends SampleRequest {
 		
 		doNothing().when(cashierService).delete(any(Long.class));
 		
-		delete("/cashiers/999").andExpect(status().isOk());
+		delete("/cashiers/1").andExpect(status().isOk());
 		
 	}
 

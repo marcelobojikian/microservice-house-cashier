@@ -1,14 +1,12 @@
-package com.cashhouse.cashier.dto.output;
+package com.cashhouse.cashier.dto.response.cashier;
 
 import java.math.BigDecimal;
 
 import com.cashhouse.cashier.model.Cashier;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class CashierDetailDto {
 
 	Long id;

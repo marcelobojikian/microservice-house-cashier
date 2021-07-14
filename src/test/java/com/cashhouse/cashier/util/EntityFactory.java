@@ -17,7 +17,15 @@ public class EntityFactory {
 	 * Transaction Helper
 	 */
 
-	public static Transaction createTransaction(Long id, Double value, Status status, Action action) {
+	public static Transaction createTransaction(Long id, BigDecimal value, Status status, Action action, Cashier cashier) {
+
+		Transaction transaction = createTransaction(id, value, status, action);
+		transaction.setCashier(cashier);
+
+		return transaction;
+	}
+
+	public static Transaction createTransaction(Long id, BigDecimal value, Status status, Action action) {
 
 		Transaction transaction = createTransaction(value, status, action);
 		transaction.setId(id);
@@ -25,10 +33,10 @@ public class EntityFactory {
 		return transaction;
 	}
 
-	public static Transaction createTransaction(Double value, Status status, Action action) {
+	public static Transaction createTransaction(BigDecimal value, Status status, Action action) {
 
 		Transaction transaction = new Transaction();
-		transaction.setValue(BigDecimal.valueOf(value));
+		transaction.setValue(value);
 		transaction.setStatus(status);
 		transaction.setAction(action);
 

@@ -1,4 +1,4 @@
-package com.cashhouse.cashier.dto.output;
+package com.cashhouse.cashier.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

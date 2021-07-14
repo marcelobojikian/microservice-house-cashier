@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.cashhouse.cashier.dto.output.TransactionDetailDto;
+import com.cashhouse.cashier.dto.response.transaction.TransactionDetailDto;
 import com.cashhouse.cashier.model.Transaction;
 import com.cashhouse.cashier.service.TransactionService;
 
@@ -33,7 +33,7 @@ public class TransactionActionController {
 		Transaction transaction = transactionService.finish(id);
 
 		URI uri = uriBuilder.path("/api/v1/transactions/{id}").buildAndExpand(transaction.getId()).toUri();
-		return ResponseEntity.created(uri).body(TransactionDetailDto.convert(transaction));
+		return ResponseEntity.created(uri).body(new TransactionDetailDto(transaction));
 
 	}
 

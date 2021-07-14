@@ -1,4 +1,4 @@
-package com.cashhouse.cashier.dto.input;
+package com.cashhouse.cashier.dto.request.transaction;
 
 import java.math.BigDecimal;
 

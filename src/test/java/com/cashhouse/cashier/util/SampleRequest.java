@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,13 +26,7 @@ public class SampleRequest {
 	@Autowired
 	private MockMvc mockMvc;
 
-//	private HttpHeaders headers;
 	private ContentHelper content;
-
-//	public HttpHeaders headers() {
-//		this.headers = new HttpHeaders();
-//		return headers;
-//	}
 
 	public ContentHelper body() {
 		this.content = ContentHelper.generate();
@@ -55,6 +50,16 @@ public class SampleRequest {
 		.buildAndExpand(id).toUri().toString();
 	}
 
+	public ResultActions get(String url) throws Exception {
+		if (content == null) {
+			body();
+		}
+		String contentJson = this.content.toJson();
+		log.debug(String.format(FORMAT_LOG, url, contentJson));
+		this.content = null;
+		return get(url, contentJson);
+	}
+
 	public ResultActions post(String url) throws Exception {
 		if (content == null) {
 			throw new IllegalArgumentException(MESSAGE_NO_CONTENT);
@@ -62,7 +67,6 @@ public class SampleRequest {
 		String contentJson = this.content.toJson();
 		log.debug(String.format(FORMAT_LOG, url, contentJson));
 		this.content = null;
-//		this.headers = null;
 		return post(url, contentJson);
 	}
 
@@ -73,7 +77,6 @@ public class SampleRequest {
 		String contentJson = this.content.toJson();
 		log.debug(String.format(FORMAT_LOG, url, contentJson));
 		this.content = null;
-//		this.headers = null;
 		return put(url, contentJson);
 	}
 
@@ -84,12 +87,20 @@ public class SampleRequest {
 		String contentJson = this.content.toJson();
 		log.debug(String.format(FORMAT_LOG, url, contentJson));
 		this.content = null;
-//		this.headers = null;
 		return patch(url, contentJson);
 	}
+	
+	public ResultActions invokeGet(MockHttpServletRequestBuilder builder) throws Exception {
+		return mockMvc.perform(builder);
+	}
+	
+	public MockHttpServletRequestBuilder customGet(String url) {
+		return MockMvcRequestBuilders.get(VERSION + url);
+	}
 
-	public ResultActions get(String url) throws Exception {
-		return mockMvc.perform(MockMvcRequestBuilders.get(VERSION + url).contentType(MediaType.APPLICATION_JSON));
+	public ResultActions get(String url, String content) throws Exception {
+		return mockMvc.perform(
+				MockMvcRequestBuilders.get(VERSION + url).content(content).contentType(MediaType.APPLICATION_JSON));
 	}
 
 	public ResultActions post(String url, String content) throws Exception {

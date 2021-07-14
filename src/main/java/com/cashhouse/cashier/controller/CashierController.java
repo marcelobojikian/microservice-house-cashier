@@ -1,8 +1,6 @@
 package com.cashhouse.cashier.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -25,10 +23,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.cashhouse.cashier.dto.input.CreateCashier;
-import com.cashhouse.cashier.dto.input.EntityCashier;
-import com.cashhouse.cashier.dto.input.UpdateCashier;
-import com.cashhouse.cashier.dto.output.CashierDetailDto;
+import com.cashhouse.cashier.dto.factory.PageableDto;
+import com.cashhouse.cashier.dto.request.cashier.CreateCashier;
+import com.cashhouse.cashier.dto.request.cashier.EntityCashier;
+import com.cashhouse.cashier.dto.request.cashier.UpdateCashier;
+import com.cashhouse.cashier.dto.response.cashier.CashierDetailDto;
+import com.cashhouse.cashier.dto.response.cashier.CashierListDto;
 import com.cashhouse.cashier.model.Cashier;
 import com.cashhouse.cashier.service.CashierService;
 
@@ -43,7 +43,7 @@ public class CashierController {
 
 	@GetMapping("")
 	@ApiOperation(value = "Return list with all cashiers", response = CashierDetailDto[].class)
-	public ResponseEntity<List<CashierDetailDto>> findAll(
+	public ResponseEntity<Page<?>> findAll(
 			@PageableDefault(page = 0, size = 10, sort = "name", direction = Direction.ASC) Pageable pageable) {
 
 		Page<Cashier> cashiers = cashierService.findAll(pageable);
@@ -51,13 +51,12 @@ public class CashierController {
 		if (cashiers.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-
-		List<CashierDetailDto> dtoList = new ArrayList<>();
-		cashiers.forEach(cashier -> {
-			dtoList.add(new CashierDetailDto(cashier));
-		});
-
-		return new ResponseEntity<>(dtoList, HttpStatus.OK);
+		
+		PageableDto dto = new CashierListDto(cashiers);
+		
+		HttpStatus httpStatus = dto.isPartialPage() ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
+		
+		return new ResponseEntity<>(dto.asPage(pageable), httpStatus);
 
 	}
 

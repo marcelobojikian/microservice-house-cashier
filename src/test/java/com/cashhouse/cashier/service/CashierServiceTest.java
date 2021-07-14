@@ -42,7 +42,7 @@ class CashierServiceTest {
 
 		when(cashierRepository.findById(1l)).thenReturn(Optional.empty());
 
-		assertThrows(RuntimeException.class, () -> {
+		assertThrows(EntityNotFoundException.class, () -> {
 			cashierService.findById(1L);
 		});
 
@@ -81,7 +81,7 @@ class CashierServiceTest {
 	}
 
 	@Test
-	public void whenCreate_thenReturnCashierObject() throws Exception {
+	public void whenCreate_thenReturnEntityObject() throws Exception {
 
 		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
 

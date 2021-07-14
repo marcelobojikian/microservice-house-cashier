@@ -40,7 +40,7 @@ public class TransactionRepositoryTest {
 		
 		Cashier cashier = optCashier.get();
 		
-		Transaction transaction = createTransaction(99.98, Status.FINISHED, Action.DEPOSIT);
+		Transaction transaction = createTransaction(new BigDecimal("99.98"), Status.FINISHED, Action.DEPOSIT);
 		transaction.setCashier(cashier);
 
 		Long idCreated = em.persist(transaction).getId();

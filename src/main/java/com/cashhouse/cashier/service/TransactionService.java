@@ -15,7 +15,7 @@ public interface TransactionService {
 
 	public Transaction createDeposit(Long cashierId, BigDecimal value);
 
-	public Transaction createwithdraw(Long cashierId, BigDecimal value);
+	public Transaction createWithdraw(Long cashierId, BigDecimal value);
 
 	public void delete(Long id);
 

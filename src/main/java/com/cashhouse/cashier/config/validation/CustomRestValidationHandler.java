@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.cashhouse.cashier.dto.output.ResponseEntityErrorDto;
+import com.cashhouse.cashier.dto.response.ResponseEntityErrorDto;
 
 @RestControllerAdvice
 public class CustomRestValidationHandler {
@@ -44,7 +44,7 @@ public class CustomRestValidationHandler {
 	
 	@ResponseStatus(code = HttpStatus.METHOD_NOT_ALLOWED)
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntityErrorDto handleError405(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntityErrorDto handle(HttpRequestMethodNotSupportedException e) {
         return new ResponseEntityErrorDto(e.getMethod(), e.getLocalizedMessage());
     }
 	

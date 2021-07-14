@@ -1,4 +1,4 @@
-package com.cashhouse.cashier.dto.input;
+package com.cashhouse.cashier.dto.request.cashier;
 
 import javax.validation.constraints.NotBlank;
 
