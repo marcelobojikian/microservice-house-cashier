@@ -21,7 +21,7 @@ public abstract class GroupListDto<T, L> implements PageableDto<L> {
 		this.dtoMap = new LinkedHashMap<>();
 	}
 	
-	public void add(T t, String header) {
+	void add(T t, String header) {
 		if (!dtoMap.containsKey(header)) {
 			dtoMap.put(header, new LinkedList<>());
 		}
@@ -34,10 +34,13 @@ public abstract class GroupListDto<T, L> implements PageableDto<L> {
 	
 	@Override
 	public Page<?> asPage(Page<L> list, Pageable pageable){
+		
+		dtoMap.clear();
 
 		list.forEach(l -> {
 			String header = getHeader(l);
-			add(getContent(l), header);
+			T content = getContent(l);
+			add(content, header);
 		});
 		
 		Long totalElements = list.getTotalElements();

@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -56,16 +57,14 @@ public class TransactionController {
 		if (transactions.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		
-//		Locale locale = language == null ? LocaleContextHolder.getLocale() : Locale.forLanguageTag(language);
-		
-		if(language != null) {
-			Locale locale = Locale.forLanguageTag(language);
-			factory.addField("createdDate", new TransactionDateHeaderDto(locale));	
-		}
-		
-//		TransactionDtoFactory factory = new TransactionDtoFactory(pageable, locale);
+
 		PageableDto<Transaction> dto = factory.getListDto(pageable);
+
+		if(dto instanceof TransactionDateHeaderDto) {
+			TransactionDateHeaderDto dateHead = (TransactionDateHeaderDto) dto;
+			Locale locale = language == null ? LocaleContextHolder.getLocale() : Locale.forLanguageTag(language);
+			dateHead.setFormatter(locale);
+		}
 		
 		boolean isPartialPage = transactions.getNumberOfElements() < transactions.getTotalElements();
 		HttpStatus httpStatus = isPartialPage ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;

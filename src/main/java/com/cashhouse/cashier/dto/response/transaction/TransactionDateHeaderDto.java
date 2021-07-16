@@ -27,6 +27,10 @@ public class TransactionDateHeaderDto extends GroupListDto<TransactionDetailDto,
 		this.formatter.withLocale(locale);
 	}
 
+	public void setFormatter(Locale locale) {
+		this.formatter.withLocale(locale);
+	}
+
 	@Override
 	public String getHeader(Transaction transaction) {
 		LocalDateTime createdDate = transaction.getCreatedDate();
