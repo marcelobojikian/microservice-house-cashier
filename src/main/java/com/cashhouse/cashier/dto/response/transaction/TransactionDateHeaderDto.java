@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 
-import org.springframework.data.domain.Page;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.cashhouse.cashier.dto.factory.type.GroupListDto;
 import com.cashhouse.cashier.model.Transaction;
@@ -14,9 +14,17 @@ public class TransactionDateHeaderDto extends GroupListDto<TransactionDetailDto,
 	
 	private DateTimeFormatter formatter;
 	
-	public TransactionDateHeaderDto(Page<Transaction> transactions, FormatStyle style, Locale locale) {
-		super(transactions);
-		this.formatter = DateTimeFormatter.ofLocalizedDate(style).withLocale(locale);
+	public TransactionDateHeaderDto() {
+		this(FormatStyle.LONG, LocaleContextHolder.getLocale());
+	}
+	
+	public TransactionDateHeaderDto(Locale locale) {
+		this(FormatStyle.LONG, locale);
+	}
+	
+	public TransactionDateHeaderDto(FormatStyle formatStyle, Locale locale) {
+		this.formatter = DateTimeFormatter.ofLocalizedDate(formatStyle);
+		this.formatter.withLocale(locale);
 	}
 
 	@Override

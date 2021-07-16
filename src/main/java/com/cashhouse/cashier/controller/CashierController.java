@@ -27,8 +27,8 @@ import com.cashhouse.cashier.dto.factory.PageableDto;
 import com.cashhouse.cashier.dto.request.cashier.CreateCashier;
 import com.cashhouse.cashier.dto.request.cashier.EntityCashier;
 import com.cashhouse.cashier.dto.request.cashier.UpdateCashier;
+import com.cashhouse.cashier.dto.response.CashierListDtoFactory;
 import com.cashhouse.cashier.dto.response.cashier.CashierDetailDto;
-import com.cashhouse.cashier.dto.response.cashier.CashierListDto;
 import com.cashhouse.cashier.model.Cashier;
 import com.cashhouse.cashier.service.CashierService;
 
@@ -41,6 +41,9 @@ public class CashierController {
 	@Autowired
 	private CashierService cashierService;
 
+	@Autowired
+	private CashierListDtoFactory factory;
+
 	@GetMapping("")
 	@ApiOperation(value = "Return list with all cashiers", response = CashierDetailDto[].class)
 	public ResponseEntity<Page<?>> findAll(
@@ -52,11 +55,12 @@ public class CashierController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		
-		PageableDto dto = new CashierListDto(cashiers);
+		PageableDto<Cashier> dto = factory.getListDto(pageable);
 		
-		HttpStatus httpStatus = dto.isPartialPage() ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
+		boolean isPartialPage = cashiers.getNumberOfElements() < cashiers.getTotalElements();
+		HttpStatus httpStatus = isPartialPage ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
 		
-		return new ResponseEntity<>(dto.asPage(pageable), httpStatus);
+		return new ResponseEntity<>(dto.asPage(cashiers, pageable), httpStatus);
 
 	}
 

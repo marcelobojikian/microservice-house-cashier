@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -27,8 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cashhouse.cashier.dto.factory.PageableDto;
-import com.cashhouse.cashier.dto.factory.TransactionDtoFactory;
 import com.cashhouse.cashier.dto.request.transaction.CreateTransaction;
+import com.cashhouse.cashier.dto.response.TransactionListDtoFactory;
+import com.cashhouse.cashier.dto.response.transaction.TransactionDateHeaderDto;
 import com.cashhouse.cashier.dto.response.transaction.TransactionDetailDto;
 import com.cashhouse.cashier.model.Transaction;
 import com.cashhouse.cashier.service.TransactionService;
@@ -42,6 +42,9 @@ public class TransactionController {
 	@Autowired
 	private TransactionService transactionService;
 
+	@Autowired
+	private TransactionListDtoFactory factory;
+
 	@GetMapping("")
 	@ApiOperation(value = "Return a list with all transaction", response = TransactionDetailDto[].class)
 	public ResponseEntity<Page<?>> findAll(
@@ -54,14 +57,20 @@ public class TransactionController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		
-		Locale locale = language == null ? LocaleContextHolder.getLocale() : Locale.forLanguageTag(language);
+//		Locale locale = language == null ? LocaleContextHolder.getLocale() : Locale.forLanguageTag(language);
 		
-		TransactionDtoFactory factory = new TransactionDtoFactory(pageable, locale);
-		PageableDto dto = factory.asPage(transactions);
+		if(language != null) {
+			Locale locale = Locale.forLanguageTag(language);
+			factory.addField("createdDate", new TransactionDateHeaderDto(locale));	
+		}
 		
-		HttpStatus httpStatus = dto.isPartialPage() ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
+//		TransactionDtoFactory factory = new TransactionDtoFactory(pageable, locale);
+		PageableDto<Transaction> dto = factory.getListDto(pageable);
 		
-		return new ResponseEntity<>(dto.asPage(pageable), httpStatus);
+		boolean isPartialPage = transactions.getNumberOfElements() < transactions.getTotalElements();
+		HttpStatus httpStatus = isPartialPage ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
+		
+		return new ResponseEntity<>(dto.asPage(transactions, pageable), httpStatus);
 
 	}
 

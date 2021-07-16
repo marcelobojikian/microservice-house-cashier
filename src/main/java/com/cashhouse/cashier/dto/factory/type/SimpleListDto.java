@@ -9,18 +9,12 @@ import org.springframework.data.domain.Pageable;
 
 import com.cashhouse.cashier.dto.factory.PageableDto;
 
-public abstract class SimpleListDto<T, L> implements PageableDto {
-
-	private Page<L> list;
-
-	public SimpleListDto(Page<L> list) {
-		this.list = list;
-	}
+public abstract class SimpleListDto<T, L> implements PageableDto<L> {
 
 	public abstract T getContent(L l);
 
 	@Override
-	public Page<?> asPage(Pageable pageable) {
+	public Page<?> asPage(Page<L> list, Pageable pageable) {
 		List<T> dtoList = new ArrayList<>();
 		list.forEach(l -> {
 			dtoList.add(getContent(l));
@@ -28,11 +22,6 @@ public abstract class SimpleListDto<T, L> implements PageableDto {
 
 		Long totalElements = list.getTotalElements();
 		return new PageImpl<>(dtoList, pageable, totalElements.intValue());
-	}
-
-	@Override
-	public boolean isPartialPage() {
-		return list.getNumberOfElements() < list.getTotalElements();
 	}
 
 }

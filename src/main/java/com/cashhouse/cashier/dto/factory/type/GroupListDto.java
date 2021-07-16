@@ -13,13 +13,11 @@ import org.springframework.data.domain.Pageable;
 
 import com.cashhouse.cashier.dto.factory.PageableDto;
 
-public abstract class GroupListDto<T, L> implements PageableDto {
+public abstract class GroupListDto<T, L> implements PageableDto<L> {
 	
-	private Page<L> list;
 	private Map<String, Collection<T>> dtoMap;
 	
-	public GroupListDto(Page<L> list) {
-		this.list = list;
+	public GroupListDto() {
 		this.dtoMap = new LinkedHashMap<>();
 	}
 	
@@ -33,14 +31,9 @@ public abstract class GroupListDto<T, L> implements PageableDto {
 	public abstract String getHeader(L l);
 	
 	public abstract T getContent(L l);
-
-	@Override
-	public boolean isPartialPage() {
-		return list.getNumberOfElements() < list.getTotalElements();
-	}
 	
 	@Override
-	public Page<?> asPage(Pageable pageable){
+	public Page<?> asPage(Page<L> list, Pageable pageable){
 
 		list.forEach(l -> {
 			String header = getHeader(l);
