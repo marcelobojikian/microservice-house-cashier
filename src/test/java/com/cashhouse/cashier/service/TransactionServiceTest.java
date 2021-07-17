@@ -2,9 +2,9 @@ package com.cashhouse.cashier.service;
 
 import static com.cashhouse.cashier.util.EntityFactory.createCashier;
 import static com.cashhouse.cashier.util.EntityFactory.createTransaction;
-import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,6 +30,8 @@ import com.cashhouse.cashier.model.Transaction.Action;
 import com.cashhouse.cashier.model.Transaction.Status;
 import com.cashhouse.cashier.repository.CashierRepository;
 import com.cashhouse.cashier.repository.TransactionRepository;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 
 @SpringBootTest
 class TransactionServiceTest {
@@ -80,10 +82,12 @@ class TransactionServiceTest {
 
 		List<Transaction> transactions = Arrays.asList(transactionOne, transactionTwo);
 		Page<Transaction> transactionsPage = new PageImpl<>(transactions, pagination, transactions.size());
+		
+		Predicate predicate = new BooleanBuilder();
 
-		when(transactionRepository.findAll(pagination)).thenReturn(transactionsPage);
+		when(transactionRepository.findAll(predicate, pagination)).thenReturn(transactionsPage);
 
-		Page<Transaction> results = transactionService.findAll(pagination);
+		Page<Transaction> results = transactionService.findAll(predicate, pagination);
 
 		assertEquals(results, transactionsPage);
 

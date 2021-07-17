@@ -91,7 +91,7 @@ class TransactionControllerTest extends SampleRequest {
 
 		Page<Transaction> page = new PageImpl<>(Collections.emptyList());
 
-		when(transactionService.findAll(any())).thenReturn(page);
+		when(transactionService.findAll(any(), any())).thenReturn(page);
 
 		get("/transactions").andExpect(status().isNoContent());
 
@@ -106,7 +106,7 @@ class TransactionControllerTest extends SampleRequest {
 
 		Page<Transaction> page = new PageImpl<>(Arrays.asList(transaction));
 
-		when(transactionService.findAll(any())).thenReturn(page);
+		when(transactionService.findAll(any(), any())).thenReturn(page);
 
 		// @formatter:off
 		get("/transactions")
@@ -125,7 +125,7 @@ class TransactionControllerTest extends SampleRequest {
 		
 		Page<Transaction> page = new PageImpl<>(Arrays.asList(transaction), PageRequest.of(1, 8), 20);
 
-		when(transactionService.findAll(any())).thenReturn(page);
+		when(transactionService.findAll(any(), any())).thenReturn(page);
 
 		// @formatter:off		
 		get("/transactions?size=2&sort=cashier")
@@ -144,7 +144,7 @@ class TransactionControllerTest extends SampleRequest {
 
 		Page<Transaction> page = new PageImpl<>(Arrays.asList(transaction));
 
-		when(transactionService.findAll(any())).thenReturn(page);
+		when(transactionService.findAll(any(), any())).thenReturn(page);
 
 		// @formatter:off
 		

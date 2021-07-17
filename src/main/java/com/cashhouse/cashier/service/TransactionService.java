@@ -6,12 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.cashhouse.cashier.model.Transaction;
+import com.querydsl.core.types.Predicate;
 
 public interface TransactionService {
 
 	public Transaction findById(Long id);
 
-	public Page<Transaction> findAll(Pageable pageable);
+	public Page<Transaction> findAll(Predicate predicate, Pageable pageable);
 
 	public Transaction createDeposit(Long cashierId, BigDecimal value);
 

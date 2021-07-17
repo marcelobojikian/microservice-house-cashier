@@ -16,6 +16,7 @@ import com.cashhouse.cashier.model.Transaction.Action;
 import com.cashhouse.cashier.model.Transaction.Status;
 import com.cashhouse.cashier.repository.CashierRepository;
 import com.cashhouse.cashier.repository.TransactionRepository;
+import com.querydsl.core.types.Predicate;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -35,8 +36,8 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	@Override
-	public Page<Transaction> findAll(Pageable pageable) {
-		return transactionRepository.findAll(pageable);
+	public Page<Transaction> findAll(Predicate predicate, Pageable pageable) {
+		return transactionRepository.findAll(predicate, pageable);
 	}
 
 	@Override

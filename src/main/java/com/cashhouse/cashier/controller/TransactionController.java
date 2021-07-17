@@ -8,10 +8,10 @@ import javax.validation.Valid;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,7 @@ import com.cashhouse.cashier.dto.response.transaction.TransactionDateHeaderDto;
 import com.cashhouse.cashier.dto.response.transaction.TransactionDetailDto;
 import com.cashhouse.cashier.model.Transaction;
 import com.cashhouse.cashier.service.TransactionService;
+import com.querydsl.core.types.Predicate;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -50,9 +51,10 @@ public class TransactionController {
 	@ApiOperation(value = "Return a list with all transaction", response = TransactionDetailDto[].class)
 	public ResponseEntity<Page<?>> findAll(
 			@RequestHeader(value = HttpHeaders.ACCEPT_LANGUAGE, required = false) String language,
+			@QuerydslPredicate(root = Transaction.class) Predicate predicate,
 			@PageableDefault(page = 0, size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable) {
 
-		Page<Transaction> transactions = transactionService.findAll(pageable);
+		Page<Transaction> transactions = transactionService.findAll(predicate, pageable);
 
 		if (transactions.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -60,15 +62,13 @@ public class TransactionController {
 
 		PageableDto<Transaction> dto = factory.getListDto(pageable);
 
-		if(dto instanceof TransactionDateHeaderDto) {
-			TransactionDateHeaderDto dateHead = (TransactionDateHeaderDto) dto;
-			Locale locale = language == null ? LocaleContextHolder.getLocale() : Locale.forLanguageTag(language);
-			dateHead.setFormatter(locale);
+		if (language != null && dto instanceof TransactionDateHeaderDto) {
+			dto = new TransactionDateHeaderDto(Locale.forLanguageTag(language));
 		}
-		
+
 		boolean isPartialPage = transactions.getNumberOfElements() < transactions.getTotalElements();
 		HttpStatus httpStatus = isPartialPage ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK;
-		
+
 		return new ResponseEntity<>(dto.asPage(transactions, pageable), httpStatus);
 
 	}

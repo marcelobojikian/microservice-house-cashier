@@ -11,24 +11,19 @@ import com.cashhouse.cashier.dto.factory.type.GroupListDto;
 import com.cashhouse.cashier.model.Transaction;
 
 public class TransactionDateHeaderDto extends GroupListDto<TransactionDetailDto, Transaction> {
-	
+
 	private DateTimeFormatter formatter;
-	
+
 	public TransactionDateHeaderDto() {
 		this(FormatStyle.LONG, LocaleContextHolder.getLocale());
 	}
-	
+
 	public TransactionDateHeaderDto(Locale locale) {
 		this(FormatStyle.LONG, locale);
 	}
-	
-	public TransactionDateHeaderDto(FormatStyle formatStyle, Locale locale) {
-		this.formatter = DateTimeFormatter.ofLocalizedDate(formatStyle);
-		this.formatter.withLocale(locale);
-	}
 
-	public void setFormatter(Locale locale) {
-		this.formatter.withLocale(locale);
+	public TransactionDateHeaderDto(FormatStyle formatStyle, Locale locale) {
+		this.formatter = DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(locale);
 	}
 
 	@Override

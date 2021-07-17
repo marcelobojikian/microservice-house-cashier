@@ -24,6 +24,7 @@
 		<sonar.projectKey>marcelobojikian_microservice-house-cashier</sonar.projectKey>
 		<sonar.organization>marcelobojikian</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<querydsl.version>4.1.4</querydsl.version>
 
 		<!-- JaCoCo Properties -->
 		<jacoco.version>0.8.7</jacoco.version>
@@ -100,6 +101,23 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<version>${querydsl.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -141,6 +159,23 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<!-- QueryDSL plugin -->
+            <plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.1.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/generated-sources/java</outputDirectory>
+                            <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 
