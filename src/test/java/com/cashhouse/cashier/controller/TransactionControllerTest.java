@@ -25,6 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -62,7 +63,7 @@ class TransactionControllerTest extends SampleRequest {
 
 		// @formatter:off
 		get("/transactions/1")
-	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	        .andExpect(content().contentType(MediaTypes.HAL_JSON))
 	        .andExpect(status().isOk())
 			.andExpect(jsonPath("$.id", is(1)))
 			.andExpect(jsonPath("$.cashier", is("Rent & Clean")))

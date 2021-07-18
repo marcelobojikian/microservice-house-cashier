@@ -59,10 +59,6 @@ public class Cashier implements Serializable {
 	public List<Transaction> getTransactions(){
 		return Collections.unmodifiableList(transactions);
 	}
-	
-	public void confirmTransaction(Transaction transaction) {
-		
-	}
 
 	void doDeposit(BigDecimal value) {
 		this.balance = this.balance.add(value);

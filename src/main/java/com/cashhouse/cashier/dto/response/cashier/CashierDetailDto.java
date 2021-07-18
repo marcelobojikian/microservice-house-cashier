@@ -1,13 +1,20 @@
 package com.cashhouse.cashier.dto.response.cashier;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.math.BigDecimal;
 
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
+
+import com.cashhouse.cashier.controller.CashierController;
 import com.cashhouse.cashier.model.Cashier;
 
 import lombok.Getter;
 
 @Getter
-public class CashierDetailDto {
+public class CashierDetailDto extends RepresentationModel<CashierDetailDto> {
 
 	Long id;
 
@@ -22,6 +29,9 @@ public class CashierDetailDto {
 		this.name = cashier.getName();
 		this.started = cashier.getStarted();
 		this.balance = cashier.getBalance();
+
+		Link selfLink = linkTo(methodOn(CashierController.class).findById(id)).withSelfRel();
+		this.add(selfLink);
 	}
 
 }

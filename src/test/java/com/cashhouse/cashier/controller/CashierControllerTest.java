@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 
 import com.cashhouse.cashier.config.validation.CustomRestValidationHandler;
@@ -54,7 +55,7 @@ class CashierControllerTest extends SampleRequest {
 
 		// @formatter:off
 		get("/cashiers/3")
-	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(content().contentType(MediaTypes.HAL_JSON))
 	        .andExpect(status().isOk())
 			.andExpect(jsonPath("$.id", is(3)))
 			.andExpect(jsonPath("$.name", is("Rent & Clean")))
