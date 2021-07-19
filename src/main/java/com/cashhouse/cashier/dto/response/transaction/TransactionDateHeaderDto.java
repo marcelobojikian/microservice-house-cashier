@@ -29,7 +29,7 @@ public class TransactionDateHeaderDto extends GroupListDto<TransactionDetailDto,
 	@Override
 	public String getHeader(Transaction transaction) {
 		LocalDateTime createdDate = transaction.getCreatedDate();
-		return createdDate.format(formatter).toString();
+		return createdDate.format(formatter);
 	}
 
 	@Override

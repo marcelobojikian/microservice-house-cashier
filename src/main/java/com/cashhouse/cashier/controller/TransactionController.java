@@ -49,7 +49,7 @@ public class TransactionController {
 
 	@GetMapping("")
 	@ApiOperation(value = "Return a list with all transaction", response = TransactionDetailDto[].class)
-	public ResponseEntity<Page<?>> findAll(
+	public ResponseEntity<Page<? extends Object>> findAll(
 			@RequestHeader(value = HttpHeaders.ACCEPT_LANGUAGE, required = false) String language,
 			@QuerydslPredicate(root = Transaction.class) Predicate predicate,
 			@PageableDefault(page = 0, size = 10, sort = "createdDate", direction = Direction.DESC) Pageable pageable) {

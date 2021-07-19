@@ -16,7 +16,7 @@ public abstract class ResponseListDtoFactory<T, L> {
 	private HashMap<String, GroupListDto<T, L>> fields;
 	private SimpleListDto<T, L> defaultList;
 	
-	public ResponseListDtoFactory(SimpleListDto<T, L> defaultList) {
+	protected ResponseListDtoFactory(SimpleListDto<T, L> defaultList) {
 		this.defaultList = defaultList;
 		fields = new HashMap<>();
 	}

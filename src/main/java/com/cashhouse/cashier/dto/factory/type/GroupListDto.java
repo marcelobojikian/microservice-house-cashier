@@ -15,17 +15,15 @@ import com.cashhouse.cashier.dto.factory.PageableDto;
 
 public abstract class GroupListDto<T, L> implements PageableDto<L> {
 	
-	private Map<String, Collection<T>> dtoMap;
-	
-	public GroupListDto() {
-		this.dtoMap = new LinkedHashMap<>();
-	}
+	private Map<String, Collection<T>> dtoMap = new LinkedHashMap<>();
 	
 	void add(T t, String header) {
-		if (!dtoMap.containsKey(header)) {
-			dtoMap.put(header, new LinkedList<>());
-		}
-		dtoMap.get(header).add(t);
+		dtoMap.computeIfAbsent(header, 
+				k -> new LinkedList<T>()).add(t);
+//		if (!dtoMap.containsKey(header)) {
+//			dtoMap.put(header, new LinkedList<>());
+//		}
+//		dtoMap.get(header).add(t);
 	}
 	
 	public abstract String getHeader(L l);
@@ -44,9 +42,9 @@ public abstract class GroupListDto<T, L> implements PageableDto<L> {
 		});
 		
 		Long totalElements = list.getTotalElements();
-		List<Object> asList = Arrays.asList(dtoMap);
+		List<Map<String, Collection<T>>> asList = Arrays.asList(dtoMap);
 		
-		return new PageImpl<Object>(asList, pageable, totalElements.intValue());
+		return new PageImpl<Map<String, Collection<T>>>(asList, pageable, totalElements.intValue());
 		
 	}
 

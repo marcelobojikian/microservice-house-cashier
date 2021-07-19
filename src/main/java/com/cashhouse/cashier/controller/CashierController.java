@@ -46,7 +46,7 @@ public class CashierController {
 
 	@GetMapping("")
 	@ApiOperation(value = "Return list with all cashiers", response = CashierDetailDto[].class)
-	public ResponseEntity<Page<?>> findAll(
+	public ResponseEntity<Page<? extends Object>> findAll(
 			@PageableDefault(page = 0, size = 10, sort = "name", direction = Direction.ASC) Pageable pageable) {
 
 		Page<Cashier> cashiers = cashierService.findAll(pageable);
