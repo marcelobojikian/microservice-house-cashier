@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface PageableDto<T> {
 	
-	public Page<? extends Object> asPage(Page<T> list, Pageable pageable);
+	public Page asPage(Page<T> list, Pageable pageable);
 
 }
