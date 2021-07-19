@@ -16,9 +16,7 @@ public abstract class SimpleListDto<T, L> implements PageableDto<L> {
 	@Override
 	public Page<?> asPage(Page<L> list, Pageable pageable) {
 		List<T> dtoList = new ArrayList<>();
-		list.forEach(l -> {
-			dtoList.add(getContent(l));
-		});
+		list.forEach(l -> dtoList.add(getContent(l)));
 
 		Long totalElements = list.getTotalElements();
 		return new PageImpl<>(dtoList, pageable, totalElements.intValue());
