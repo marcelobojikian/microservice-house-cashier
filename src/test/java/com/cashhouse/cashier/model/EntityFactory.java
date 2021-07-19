@@ -1,9 +1,8 @@
-package com.cashhouse.cashier.util;
+package com.cashhouse.cashier.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-import com.cashhouse.cashier.model.Cashier;
-import com.cashhouse.cashier.model.Transaction;
 import com.cashhouse.cashier.model.Transaction.Action;
 import com.cashhouse.cashier.model.Transaction.Status;
 
@@ -16,6 +15,14 @@ public class EntityFactory {
 	/*
 	 * Transaction Helper
 	 */
+
+	public static Transaction createTransaction(Long id, BigDecimal value, Status status, Action action, Cashier cashier, LocalDateTime createdDate) {
+
+		Transaction transaction = createTransaction(id, value, status, action, cashier);
+		transaction.setCreatedDate(createdDate);
+
+		return transaction;
+	}
 
 	public static Transaction createTransaction(Long id, BigDecimal value, Status status, Action action, Cashier cashier) {
 
@@ -37,7 +44,7 @@ public class EntityFactory {
 
 		Transaction transaction = new Transaction();
 		transaction.setValue(value);
-		transaction.setStatus(status);
+//		transaction.setStatus(status);
 		transaction.setAction(action);
 
 		return transaction;

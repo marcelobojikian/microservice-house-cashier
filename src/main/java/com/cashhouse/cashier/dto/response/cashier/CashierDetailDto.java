@@ -11,9 +11,11 @@ import org.springframework.hateoas.RepresentationModel;
 import com.cashhouse.cashier.controller.CashierController;
 import com.cashhouse.cashier.model.Cashier;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode(callSuper = false)
 public class CashierDetailDto extends RepresentationModel<CashierDetailDto> {
 
 	Long id;

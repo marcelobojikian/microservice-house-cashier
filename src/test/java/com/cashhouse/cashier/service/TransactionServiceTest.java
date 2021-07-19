@@ -1,7 +1,7 @@
 package com.cashhouse.cashier.service;
 
-import static com.cashhouse.cashier.util.EntityFactory.createCashier;
-import static com.cashhouse.cashier.util.EntityFactory.createTransaction;
+import static com.cashhouse.cashier.model.EntityFactory.createCashier;
+import static com.cashhouse.cashier.model.EntityFactory.createTransaction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

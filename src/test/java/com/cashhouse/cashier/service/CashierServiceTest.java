@@ -1,6 +1,6 @@
 package com.cashhouse.cashier.service;
 
-import static com.cashhouse.cashier.util.EntityFactory.createCashier;
+import static com.cashhouse.cashier.model.EntityFactory.createCashier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;

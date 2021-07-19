@@ -15,9 +15,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class Transaction implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,6 +38,7 @@ public class Transaction implements Serializable {
 	@OneToOne
 	private Cashier cashier;
 
+	@Setter(value = AccessLevel.NONE)
 	@Column
 	@Enumerated(EnumType.STRING)
 	private Status status;
@@ -71,37 +71,43 @@ public class Transaction implements Serializable {
 	@Column
 	private BigDecimal value;
 
+	@Setter(value = AccessLevel.PACKAGE)
 	@Column(name = "created_at")
 	private LocalDateTime createdDate;
 
+	@Setter(value = AccessLevel.NONE)
 	@Column(name = "updated_at")
 	private LocalDateTime updatedDate;
 
+	public Transaction() {
+		this.status = Status.SENDED;
+	}
+
 	@PrePersist
-	public void prePersist() {
+	void prePersist() {
 		createdDate = LocalDateTime.now();
 	}
 
 	@PreUpdate
-	public void preUpdate() {
+	void preUpdate() {
 		updatedDate = LocalDateTime.now();
 	}
 
 	public boolean isSended() {
-		return status != null && status.equals(Status.SENDED);
+		return status.equals(Status.SENDED);
 	}
 
 	public boolean isFinished() {
-		return status != null && status.equals(Status.FINISHED);
+		return status.equals(Status.FINISHED);
 	}
 
 	public void commit() {
 
 		if (isSended()) {
-			log.info(String.format("Action %s in a Cashier %s current balance %s", action, cashier.getId(), cashier.getBalance()));
+			log.info(String.format("Action %s in the Cashier %s with current balance %s", action, cashier.getId(), cashier.getBalance()));
 			action.commit(cashier, value);
 			log.info(String.format("Apply %s. Changed balance to %s", value, cashier.getBalance()));
-			setStatus(Status.FINISHED);
+			this.status = Status.FINISHED;
 		} else {
 			log.info(String.format(String.format("Invalid operation, Transaction %s with status equal to %s", id, status)));
 			throw new IllegalStateException("transaction.status.invalid.operation");

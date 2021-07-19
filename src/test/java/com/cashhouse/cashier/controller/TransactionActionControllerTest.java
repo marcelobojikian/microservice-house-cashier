@@ -1,7 +1,7 @@
 package com.cashhouse.cashier.controller;
 
-import static com.cashhouse.cashier.util.EntityFactory.createCashier;
-import static com.cashhouse.cashier.util.EntityFactory.createTransaction;
+import static com.cashhouse.cashier.model.EntityFactory.createCashier;
+import static com.cashhouse.cashier.model.EntityFactory.createTransaction;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;

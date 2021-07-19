@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cashhouse.cashier.model.Cashier;
 import com.cashhouse.cashier.model.Transaction;
 import com.cashhouse.cashier.model.Transaction.Action;
-import com.cashhouse.cashier.model.Transaction.Status;
 import com.cashhouse.cashier.repository.CashierRepository;
 import com.cashhouse.cashier.repository.TransactionRepository;
 import com.querydsl.core.types.Predicate;
@@ -60,7 +59,6 @@ public class TransactionServiceImpl implements TransactionService {
 		Transaction transaction = new Transaction();
 
 		transaction.setAction(action);
-		transaction.setStatus(Status.SENDED);
 		transaction.setCashier(cashier);
 		transaction.setValue(value);
 

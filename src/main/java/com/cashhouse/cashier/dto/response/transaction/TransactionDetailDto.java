@@ -15,11 +15,12 @@ import com.cashhouse.cashier.model.Transaction;
 import com.cashhouse.cashier.model.Transaction.Action;
 import com.cashhouse.cashier.model.Transaction.Status;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
-public class TransactionDetailDto extends RepresentationModel<TransactionDetailDto>
-		implements Comparable<TransactionDetailDto> {
+@EqualsAndHashCode(callSuper = false)
+public class TransactionDetailDto extends RepresentationModel<TransactionDetailDto> {
 
 	Long id;
 
@@ -55,11 +56,6 @@ public class TransactionDetailDto extends RepresentationModel<TransactionDetailD
 		Link cashierLink = linkTo(methodOn(CashierController.class).findById(cashier.getId())).withRel("cashier");
 		this.add(cashierLink);
 
-	}
-
-	@Override
-	public int compareTo(TransactionDetailDto dto) {
-		return createdDate.compareTo(dto.getCreatedDate());
 	}
 
 }

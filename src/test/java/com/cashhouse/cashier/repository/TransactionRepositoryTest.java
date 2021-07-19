@@ -1,6 +1,6 @@
 package com.cashhouse.cashier.repository;
 
-import static com.cashhouse.cashier.util.EntityFactory.createTransaction;
+import static com.cashhouse.cashier.model.EntityFactory.createTransaction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -55,7 +55,7 @@ public class TransactionRepositoryTest {
 		assertNull(transactionCreated.getUpdatedDate());
 		assertEquals(cashier, transactionCreated.getCashier());
 		assertEquals(Action.DEPOSIT, transactionCreated.getAction());
-		assertEquals(Status.FINISHED, transactionCreated.getStatus());
+		assertEquals(Status.SENDED, transactionCreated.getStatus());
 		assertTrue(new BigDecimal("99.98").equals(transactionCreated.getValue()));
 		
 		transactionCreated.setValue(new BigDecimal("1.22"));

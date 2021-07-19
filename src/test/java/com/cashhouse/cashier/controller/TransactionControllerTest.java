@@ -1,7 +1,7 @@
 package com.cashhouse.cashier.controller;
 
-import static com.cashhouse.cashier.util.EntityFactory.createCashier;
-import static com.cashhouse.cashier.util.EntityFactory.createTransaction;
+import static com.cashhouse.cashier.model.EntityFactory.createCashier;
+import static com.cashhouse.cashier.model.EntityFactory.createTransaction;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -102,8 +102,7 @@ class TransactionControllerTest extends SampleRequest {
 	void whenFindAll_thenReturnListObjectsStatusOk() throws Exception {
 
 		Cashier energy = createCashier(3l, "Energy", new BigDecimal("12.45"), new BigDecimal("3.11"));
-		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy);
-		transaction.setCreatedDate(LocalDateTime.now().minusDays(2));
+		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy, LocalDateTime.now().minusDays(2));
 
 		Page<Transaction> page = new PageImpl<>(Arrays.asList(transaction));
 
@@ -121,8 +120,7 @@ class TransactionControllerTest extends SampleRequest {
 	void whenFindAll_thenReturnListObjectsStatusPartialContent() throws Exception {
 
 		Cashier energy = createCashier(3l, "Energy", new BigDecimal("12.45"), new BigDecimal("3.11"));
-		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy);
-		transaction.setCreatedDate(LocalDateTime.now().minusDays(2));
+		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy, LocalDateTime.now().minusDays(2));
 		
 		Page<Transaction> page = new PageImpl<>(Arrays.asList(transaction), PageRequest.of(1, 8), 20);
 
@@ -140,8 +138,7 @@ class TransactionControllerTest extends SampleRequest {
 	void whenFindAll_thenReturnListObjectsDifferentLanguage() throws Exception {
 
 		Cashier energy = createCashier(3l, "Energy", new BigDecimal("12.45"), new BigDecimal("3.11"));
-		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy);
-		transaction.setCreatedDate(LocalDateTime.now().minusDays(2));
+		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy, LocalDateTime.now().minusDays(2));
 
 		Page<Transaction> page = new PageImpl<>(Arrays.asList(transaction));
 
@@ -150,7 +147,7 @@ class TransactionControllerTest extends SampleRequest {
 		// @formatter:off
 		
 		invokeGet(
-			customGet("/transactions?sort=id")
+			customGet("/transactions")
 				.header(HttpHeaders.ACCEPT_LANGUAGE, "pt-BR")
 				.contentType(MediaType.APPLICATION_JSON)
 			)
