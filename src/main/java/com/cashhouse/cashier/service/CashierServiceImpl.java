@@ -19,8 +19,12 @@ public class CashierServiceImpl implements CashierService {
 
 	private static final String CASHIER_NOT_FOUND = "cashier.not.found";
 
-	@Autowired
 	private CashierRepository cashierRepository;
+
+	@Autowired
+	public CashierServiceImpl(CashierRepository cashierRepository) {
+		this.cashierRepository = cashierRepository;
+	}
 
 	@Override
 	public Cashier findById(long id) {

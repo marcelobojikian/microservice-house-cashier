@@ -1,7 +1,7 @@
 package com.cashhouse.cashier.service;
 
-import static com.cashhouse.cashier.model.EntityFactory.createCashier;
-import static com.cashhouse.cashier.model.EntityFactory.createTransaction;
+import static com.cashhouse.cashier.util.BuilderFactory.createCashier;
+import static com.cashhouse.cashier.util.BuilderFactory.createTransaction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,10 +16,10 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -33,17 +33,21 @@ import com.cashhouse.cashier.repository.TransactionRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
-@SpringBootTest
 class TransactionServiceTest {
 	
-	@Autowired
 	private TransactionService transactionService;
 
-	@MockBean
+	@Mock
 	private CashierRepository cashierRepository;
 
-	@MockBean
+	@Mock
 	private TransactionRepository transactionRepository;
+	
+	@BeforeEach
+	public void init() {
+		MockitoAnnotations.openMocks(this);
+		transactionService = new TransactionServiceImpl(cashierRepository, transactionRepository);
+	}
 
 	@Test
 	public void whenFindById_thenThrowEntityNotFoundException() throws Exception {
@@ -59,8 +63,16 @@ class TransactionServiceTest {
 	@Test
 	public void whenFindById_thenReturnEntityObject() throws Exception {
 		
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
-		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy);
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
+		
+		Transaction transaction = createTransaction()
+				.id(1l)
+				.action(Action.DEPOSIT)
+				.value("9.99")
+				.cashier(energy).result();
 
 		when(transactionRepository.findById(any(Long.class))).thenReturn(Optional.of(transaction));
 
@@ -72,13 +84,25 @@ class TransactionServiceTest {
 
 	@Test
 	public void whenFindAll_thenReturnObjectArray() throws Exception {
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
+		
+		Transaction transactionOne = createTransaction()
+				.id(1l)
+				.action(Action.DEPOSIT)
+				.value("23.08")
+				.cashier(energy).result();
+		
+		Transaction transactionTwo = createTransaction()
+				.id(2l)
+				.action(Action.WITHDRAW)
+				.value("1.84")
+				.cashier(energy).result();
 
 		PageRequest pagination = PageRequest.of(1, 10);
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
-		
-		Transaction transactionOne = createTransaction(1l, new BigDecimal("23.08"), Status.SENDED, Action.DEPOSIT, energy);
-		Transaction transactionTwo = createTransaction(2l, new BigDecimal("1.84"), Status.FINISHED, Action.WITHDRAW, energy);
 
 		List<Transaction> transactions = Arrays.asList(transactionOne, transactionTwo);
 		Page<Transaction> transactionsPage = new PageImpl<>(transactions, pagination, transactions.size());
@@ -106,9 +130,17 @@ class TransactionServiceTest {
 
 	@Test
 	public void whenCreateDeposit_thenReturnEntityObject() throws Exception {
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
-		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.DEPOSIT, energy);
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
+		
+		Transaction transaction = createTransaction()
+				.id(1l)
+				.action(Action.DEPOSIT)
+				.value("9.99")
+				.cashier(energy).result();
 
 		when(cashierRepository.findById(any(Long.class))).thenReturn(Optional.of(energy));
 		when(transactionRepository.save(any())).thenReturn(transaction);
@@ -136,9 +168,17 @@ class TransactionServiceTest {
 
 	@Test
 	public void whenCreateWithdraw_thenReturnEntityObject() throws Exception {
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
-		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.WITHDRAW, energy);
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
+		
+		Transaction transaction = createTransaction()
+				.id(1l)
+				.action(Action.WITHDRAW)
+				.value("9.99")
+				.cashier(energy).result();
 
 		when(cashierRepository.findById(any(Long.class))).thenReturn(Optional.of(energy));
 		when(transactionRepository.save(any())).thenReturn(transaction);
@@ -155,8 +195,11 @@ class TransactionServiceTest {
 
 	@Test
 	public void whenDelete_thenReturnVoid() throws Exception {
-
-		Transaction transaction = createTransaction(1l, new BigDecimal("9.99"), Status.SENDED, Action.WITHDRAW);
+		
+		Transaction transaction = createTransaction()
+				.id(1l)
+				.action(Action.WITHDRAW)
+				.value("9.99").result();
 
 		when(transactionRepository.findById(any(Long.class))).thenReturn(Optional.of(transaction));
 		doNothing().when(transactionRepository).delete(transaction);

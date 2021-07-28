@@ -1,5 +1,7 @@
 package com.cashhouse.cashier.model;
 
+import static com.cashhouse.cashier.util.BuilderFactory.createCashier;
+import static com.cashhouse.cashier.util.BuilderFactory.createTransaction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,12 +17,15 @@ class CashierTest {
 	@Test
 	void whenCreateCashier_thenReturnValidEntityObject() {
 		
-		Transaction transaction = new Transaction();
+		Transaction transaction = createTransaction()
+									.action(Action.WITHDRAW)
+									.value("3.33").result();
 		
-		transaction.setAction(Action.WITHDRAW);
-		transaction.setValue(new BigDecimal("3.33"));
-
-		Cashier cashier = new Cashier("Main cashier", new BigDecimal("2.00"), new BigDecimal("10.00"));
+		Cashier cashier = createCashier()
+				.name("Main cashier")
+				.started("2.00")
+				.balance("10.00").result();
+		
 		cashier.setTransactions(Arrays.asList(transaction));
 
 		assertEquals("Main cashier", cashier.getName());
@@ -32,8 +37,11 @@ class CashierTest {
 
 	@Test
 	void whenDoDepoist_thenReturnValidEntityObject() {
-
-		Cashier cashier = new Cashier("Main cashier", new BigDecimal("2.00"), new BigDecimal("10.00"));
+		
+		Cashier cashier = createCashier()
+				.name("Main cashier")
+				.started("2.00")
+				.balance("10.00").result();
 
 		cashier.doDeposit(new BigDecimal("5.50"));
 		
@@ -43,8 +51,11 @@ class CashierTest {
 
 	@Test
 	void whenDoWithdraw_thenReturnValidEntityObject() {
-
-		Cashier cashier = new Cashier("Main cashier", new BigDecimal("2.00"), new BigDecimal("10.00"));
+		
+		Cashier cashier = createCashier()
+				.name("Main cashier")
+				.started("2.00")
+				.balance("10.00").result();
 
 		cashier.doWithdraw(new BigDecimal("5.50"));
 		

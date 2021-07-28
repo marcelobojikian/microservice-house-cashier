@@ -1,5 +1,7 @@
 package com.cashhouse.cashier.model;
 
+import static com.cashhouse.cashier.util.BuilderFactory.createCashier;
+import static com.cashhouse.cashier.util.BuilderFactory.createTransaction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,15 +15,18 @@ import com.cashhouse.cashier.model.Transaction.Status;
 
 class TransactionTest {
 
-
 	@Test
 	void whenCreateTransaction_thenReturnValidEntityObject() {
 		
-		Cashier cashier = new Cashier("Main cashier", new BigDecimal("2.00"), new BigDecimal("10.00"));
-		Transaction transaction = new Transaction();
+		Cashier cashier = createCashier()
+				.name("Main cashier")
+				.started("2.00")
+				.balance("10.00").result();
 		
-		transaction.setAction(Action.DEPOSIT);
-		transaction.setValue(new BigDecimal("3.33"));
+		Transaction transaction = createTransaction()
+									.action(Action.DEPOSIT)
+									.value("3.33").result();
+		
 		transaction.setCashier(cashier);
 		
 		assertEquals(Status.SENDED, transaction.getStatus());
@@ -33,14 +38,17 @@ class TransactionTest {
 
 	@Test
 	void whenCommitDeposit_thenReturnValidEntityObject() {
+		
+		Cashier cashier = createCashier()
+				.name("Main cashier")
+				.started("2.00")
+				.balance("10.00").result();
+		
+		Transaction transaction = createTransaction()
+									.action(Action.DEPOSIT)
+									.value("3.33").result();
 
-		Cashier cashier = new Cashier("Main cashier", new BigDecimal("2.00"), new BigDecimal("10.00"));
-		Transaction transaction = new Transaction();
-		
-		transaction.setAction(Action.DEPOSIT);
-		transaction.setValue(new BigDecimal("3.33"));
 		transaction.setCashier(cashier);
-		
 		transaction.commit();
 		
 		assertEquals(new BigDecimal("13.33"), cashier.getBalance());
@@ -50,14 +58,17 @@ class TransactionTest {
 
 	@Test
 	void whenCommitWithdraw_thenReturnValidEntityObject() {
+		
+		Cashier cashier = createCashier()
+				.name("Main cashier")
+				.started("2.00")
+				.balance("10.00").result();
+		
+		Transaction transaction = createTransaction()
+									.action(Action.WITHDRAW)
+									.value("3.33").result();
 
-		Cashier cashier = new Cashier("Main cashier", new BigDecimal("2.00"), new BigDecimal("10.00"));
-		Transaction transaction = new Transaction();
-		
-		transaction.setAction(Action.WITHDRAW);
-		transaction.setValue(new BigDecimal("3.33"));
 		transaction.setCashier(cashier);
-		
 		transaction.commit();
 		
 		assertEquals(new BigDecimal("6.67"), cashier.getBalance());
@@ -67,19 +78,21 @@ class TransactionTest {
 
 	@Test
 	void whenCommitWithStatusFinished_thenThrowIllegalStateException() {
-
-		Cashier cashier = new Cashier("Main cashier", new BigDecimal("2.00"), new BigDecimal("10.00"));
-		Transaction transaction = new Transaction();
 		
-		transaction.setAction(Action.WITHDRAW);
-		transaction.setValue(new BigDecimal("3.33"));
+		Cashier cashier = createCashier()
+				.name("Main cashier")
+				.started("2.00")
+				.balance("10.00").result();
+		
+		Transaction transaction = createTransaction()
+									.action(Action.WITHDRAW)
+									.value("3.33").result();
+		
 		transaction.setCashier(cashier);
-		
 		transaction.commit();
 		
 		assertEquals(new BigDecimal("6.67"), cashier.getBalance());
 		assertTrue(transaction.isFinished());
-		
 
 		assertThrows(IllegalStateException.class, () -> {
 			transaction.commit();

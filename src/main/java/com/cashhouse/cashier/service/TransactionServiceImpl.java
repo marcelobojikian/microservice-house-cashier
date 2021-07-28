@@ -23,11 +23,15 @@ public class TransactionServiceImpl implements TransactionService {
 	private static final String CASHIER_NOT_FOUND = "cashier.not.found";
 	private static final String TRANSACTION_NOT_FOUND = "transaction.not.found";
 
-	@Autowired
 	private CashierRepository cashierRepository;
 
-	@Autowired
 	private TransactionRepository transactionRepository;
+
+	@Autowired	
+	public TransactionServiceImpl(CashierRepository cashierRepository, TransactionRepository transactionRepository) {
+		this.cashierRepository = cashierRepository;
+		this.transactionRepository = transactionRepository;
+	}
 
 	@Override
 	public Transaction findById(Long id) {

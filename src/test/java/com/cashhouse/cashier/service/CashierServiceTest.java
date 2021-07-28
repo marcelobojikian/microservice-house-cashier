@@ -1,9 +1,10 @@
 package com.cashhouse.cashier.service;
 
-import static com.cashhouse.cashier.model.EntityFactory.createCashier;
+import static com.cashhouse.cashier.util.BuilderFactory.createCashier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -13,29 +14,29 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import com.cashhouse.cashier.model.Cashier;
 import com.cashhouse.cashier.repository.CashierRepository;
-import com.cashhouse.cashier.repository.TransactionRepository;
 
-@SpringBootTest
 class CashierServiceTest {
 
-	@Autowired
 	private CashierService cashierService;
 
-	@MockBean
+	@Mock
 	private CashierRepository cashierRepository;
-
-	@MockBean
-	private TransactionRepository transactionRepository;
+	
+	@BeforeEach
+	public void init() {
+		MockitoAnnotations.openMocks(this);
+		cashierService = new CashierServiceImpl(cashierRepository);
+	}
 
 	@Test
 	public void whenFindById_thenThrowEntityNotFoundException() throws Exception {
@@ -50,24 +51,36 @@ class CashierServiceTest {
 
 	@Test
 	public void whenFindById_thenReturnEntityObject() throws Exception {
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
 
 		when(cashierRepository.findById(1l)).thenReturn(Optional.of(energy));
 
 		Cashier cashierExpect = cashierService.findById(1L);
-
+		
+		verify(cashierRepository).findById(1l);
 		assertEquals(cashierExpect, energy);
 
 	}
 
 	@Test
 	public void whenFindAll_thenReturnObjectArray() throws Exception {
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
+		
+		Cashier garbage = createCashier()
+				.id(2l)
+				.name("Garbage")
+				.started("4.2")
+				.balance("56.6").result();
 
 		PageRequest pagination = PageRequest.of(1, 10);
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
-		Cashier garbage = createCashier(2l, "Garbage", new BigDecimal("4.2"), new BigDecimal("56.6"));
 
 		List<Cashier> cashiers = Arrays.asList(energy, garbage);
 		Page<Cashier> cashiersPage = new PageImpl<>(cashiers, pagination, cashiers.size());
@@ -82,13 +95,17 @@ class CashierServiceTest {
 
 	@Test
 	public void whenCreate_thenReturnEntityObject() throws Exception {
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
 
 		when(cashierRepository.save(energy)).thenReturn(energy);
 
 		Cashier cashier = cashierService.create(energy);
 
+		verify(cashierRepository).save(energy);
 		assertEquals(cashier.getId(), 1l);
 		assertEquals(cashier.getName(), "Energy");
 		assertEquals(cashier.getStarted(), BigDecimal.valueOf(12.3));
@@ -98,15 +115,24 @@ class CashierServiceTest {
 
 	@Test
 	public void whenUpdate_thenReturnEntityObject() throws Exception {
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
-		Cashier energyNew = createCashier(1l, "Energy UP", new BigDecimal("3.1"), new BigDecimal("3.2"));
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
+		
+		Cashier energyNew = createCashier()
+				.id(1l)
+				.name("Energy UP")
+				.started("3.1")
+				.balance("3.2").result();
 
 		when(cashierRepository.findById(1l)).thenReturn(Optional.of(energy));
 		when(cashierRepository.save(energy)).thenReturn(energy);
 
 		Cashier cashier = cashierService.update(1l, energyNew);
 
+		verify(cashierRepository).save(energy);
 		assertEquals(cashier.getId(), 1l);
 		assertEquals(cashier.getName(), "Energy UP");
 		assertEquals(cashier.getStarted(), BigDecimal.valueOf(3.1));
@@ -116,8 +142,12 @@ class CashierServiceTest {
 
 	@Test
 	public void whenUpdate_thenThrowEntityNotFoundException() throws Exception {
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
 
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
 		when(cashierRepository.findById(99l)).thenReturn(Optional.empty());
 
 		assertThrows(EntityNotFoundException.class, () -> {
@@ -128,13 +158,18 @@ class CashierServiceTest {
 
 	@Test
 	public void whenDelete_thenReturnVoid() throws Exception {
-
-		Cashier energy = createCashier(1l, "Energy", new BigDecimal("12.3"));
+		
+		Cashier energy = createCashier()
+				.id(1l)
+				.name("Energy")
+				.started("12.3").result();
 
 		when(cashierRepository.findById(1l)).thenReturn(Optional.of(energy));
 		doNothing().when(cashierRepository).delete(energy);
 
 		cashierService.delete(1l);
+		
+		verify(cashierRepository).delete(energy);
 
 	}
 

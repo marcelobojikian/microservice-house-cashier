@@ -46,14 +46,12 @@ public class Cashier implements Serializable {
 	private BigDecimal balance;
 
 	@OneToMany(mappedBy = "cashier", cascade = {CascadeType.PERSIST, CascadeType.REMOVE })
-	private List<Transaction> transactions;
+	private List<Transaction> transactions = new ArrayList<>();
 
 	public Cashier(String name, BigDecimal started, BigDecimal balance) {
-		super();
 		this.name = name;
 		this.started = started;
 		this.balance = balance;
-		this.transactions = new ArrayList<>();
 	}
 	
 	public List<Transaction> getTransactions(){

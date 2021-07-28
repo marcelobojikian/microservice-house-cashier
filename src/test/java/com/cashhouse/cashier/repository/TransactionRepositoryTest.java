@@ -1,6 +1,6 @@
 package com.cashhouse.cashier.repository;
 
-import static com.cashhouse.cashier.model.EntityFactory.createTransaction;
+import static com.cashhouse.cashier.util.BuilderFactory.createTransaction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -39,8 +39,11 @@ public class TransactionRepositoryTest {
 		assertTrue(optCashier.isPresent());
 		
 		Cashier cashier = optCashier.get();
-		
-		Transaction transaction = createTransaction(new BigDecimal("99.98"), Status.FINISHED, Action.DEPOSIT);
+
+		Transaction transaction = createTransaction()
+									.action(Action.DEPOSIT)
+									.value("99.98").result();
+
 		transaction.setCashier(cashier);
 
 		Long idCreated = em.persist(transaction).getId();
